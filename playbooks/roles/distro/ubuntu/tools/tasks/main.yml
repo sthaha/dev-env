@@ -1,0 +1,11 @@
+---
+# use sudo when executing the role
+
+- name: install essential tools
+  apt: pkg={{item}} state=latest
+  with_items:
+    - icedtea-7-plugin
+    - openjdk-7-jre
+    - gnome-tweak-tool
+    - unity-tweak-tool
+    - indicator-multiload

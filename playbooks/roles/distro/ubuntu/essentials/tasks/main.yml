@@ -1,0 +1,27 @@
+---
+# use sudo when executing the role
+
+# update cache and dist-upgrade
+- name: dist upgrade
+  apt: upgrade=dist update_cache=yes cache_valid_time=1800
+
+- name: install essential packages
+  apt: pkg={{item}} state=present
+  with_items:
+    - build-essential
+    - g++
+    - git
+    - cmake
+    - vim
+    - curl
+    - wget
+    - zsh
+    - tmux
+    - htop
+
+- name: remove unwanted packages
+  apt: pkg={{item}} state=absent
+  with_items:
+      - unity-lens-friends
+      - unity-lens-music
+      - unity-lens-files

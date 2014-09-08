@@ -1,0 +1,37 @@
+---
+- name: fonts | ensure there is fontconfig
+  tags: fonts
+  sudo: yes
+  yum:  pkg={{item}} state=present
+  with_items:
+      - fontconfig
+  when: ansible_distribution in ('Fedora')
+
+- name: fonts | create dirs
+  tags: fonts
+  file: path={{item}} state=directory
+  ignore_errors: yes
+  with_items:
+      - ~/.fonts/
+
+- name: fonts | copy
+  tags: fonts
+  copy: src={{item}} dest=~/.fonts/
+  with_fileglob:
+      - fonts/*
+
+- name: fonts | fc-cache
+  tags: fonts
+  command: fc-cache -fv ~/.fonts
+
+- name: fonts | copy font config
+  tags: fonts
+  copy: src={{item}} dest=~/.config/fontconfig/conf.d/
+  with_fileglob:
+      - fontconfig/*
+
+- name: fonts | ensure that Powerline is installed
+  tags: fonts
+  shell: fc-list | grep -i powerline
+
+

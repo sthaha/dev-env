@@ -1,0 +1,13 @@
+---
+# use sudo when executing the role
+
+- name: fix ubuntu privacy
+  shell:
+    wget -q -O - https://fixubuntu.com/fixubuntu.sh | bash
+
+- name: remove unwanted packages
+  apt: pkg={{item}} state=absent
+  with_items:
+      - unity-lens-friends
+      - unity-lens-music
+      - unity-lens-files

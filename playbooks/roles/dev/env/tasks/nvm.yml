@@ -1,0 +1,25 @@
+---
+- name: nvm | redhat | install curl
+  tags: nvm
+  yum: pkg=curl state=present
+  sudo: yes
+  when: ansible_distribution in ('Fedora')
+
+- name: nvm | debian |install curl
+  tags: nvm
+  apt: pkg=curl state=present
+  sudo: yes
+  when: ansible_distribution in ('Ubuntu')
+
+- name: nvm | git clone nvm
+  tags: nvm
+  git: repo={{nvm.repo}} dest={{nvm.dest}} accept_hostkey=True
+
+- name: nvm | install node
+  tags: nvm
+  shell: >
+      source {{nvm.dest}}/nvm.sh ;
+      nvm install v0.10.30 && nvm alias default 0.10.30
+  args:
+    executable: /bin/bash
+

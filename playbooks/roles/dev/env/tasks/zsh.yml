@@ -1,0 +1,34 @@
+### zsh ###
+- name: zsh | init zsh repo path
+  tags: zsh
+  set_fact: zsh_repo='{{zsh_repo | default(zsh.repo)}}'
+
+- debug: msg='zsh clone {{zsh_repo}}'   #'
+  tags: zsh
+
+- name: zsh | clone oh my zsh
+  tags: zsh
+  git: repo={{zsh_repo}} dest={{zsh.dest}}
+
+- name: zsh | create necessary dirs
+  tags: zsh
+  file: path={{item}} state=directory
+  with_items:
+      - ~/.omz/custom/plugins
+
+- name: zsh | clone zsh syntax highlighting
+  tags: zsh
+  git: repo={{zsh.syntax_highlighting.repo}}
+       dest="{{zsh.dest}}/custom/plugins/zsh-syntax-highlighting"
+
+- name: zsh | copy settings
+  tags: zsh
+  copy: src={{item.file}} dest={{item.dest}}
+  with_items:
+      - { file: 'zsh/zshrc', dest: '~/.zshrc' }
+      - { file: 'zsh/neil.zsh-theme', dest: '{{zsh.dest}}/themes/' }
+
+- name: zsh | set ~z dir
+  tags: zsh
+  lineinfile: dest=~/.zshrc regexp=^ZSH= line=ZSH="{{zsh.dest}}"
+

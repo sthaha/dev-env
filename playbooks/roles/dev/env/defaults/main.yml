@@ -1,0 +1,27 @@
+
+zsh:
+  repo: git://github.com/robbyrussell/oh-my-zsh.git
+  dest: ~/.omz
+
+  syntax_highlighting:
+    repo: git://github.com/zsh-users/zsh-syntax-highlighting.git
+    # dest: should go in the zsh.repo/custom/plugins
+    #        ~/.rbenv/plugins/ruby-build
+
+fasd:
+  repo: git://github.com/clvv/fasd.git
+  dest: ~/Developer/Tools/fasd
+
+rbenv:
+  repo: git://github.com/sstephenson/rbenv.git
+  dest: ~/.rbenv
+
+  ruby_build:
+    repo: https://github.com/sstephenson/ruby-build.git
+    # dest: should go in the rbenv.dest/plugins/ruby-build
+    #        ~/.rbenv/plugins/ruby-build
+
+nvm:
+  repo: git://github.com/creationix/nvm.git
+  dest: ~/.nvm
+

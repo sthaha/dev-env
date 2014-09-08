@@ -1,0 +1,22 @@
+---
+
+- name: Install minimal packages
+  yum: pkg={{item}} state=present
+  with_items:
+      - vim
+      - zsh
+      - git
+      - tmux
+      - curl
+      - wget
+      - nc
+      - nmap
+
+- name: Installing  additional packages
+  yum: pkg={{item}} state=present
+  with_items: pkgs
+
+- name: Upgrade
+  yum: name=* state=latest
+  when: yum_upgrade_packages|default(false)
+

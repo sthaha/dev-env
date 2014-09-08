@@ -1,0 +1,10 @@
+---
+# use sudo when executing the role
+
+- name: install essential packages
+  apt: pkg={{item}} state=present
+  with_items:
+    - vlc
+    - clementine
+    - ubuntu-restricted-extras
+    - flashplugin-installer

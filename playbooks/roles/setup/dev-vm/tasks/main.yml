@@ -1,0 +1,5 @@
+---
+- include: setup_selinux.yml
+  tags: selinux
+- { include: setup_pkg.yml, pkgs:[] }
+

@@ -1,0 +1,35 @@
+---
+#- name: Setup database
+  #hosts: dev:&Fedora
+  #sudo: yes
+  #tags: db-server
+  #roles:
+      #- distro/fedora/dbserver
+      #
+- name: Gather info about hosts
+  hosts: dev
+  tags: essentials,dev-env
+  roles:
+    -  common/group_by
+
+- name: Setup VM essential
+  hosts: dev:&Ubuntu
+  sudo: yes
+  tags: essentials
+  roles:
+      - distro/ubuntu/essentials
+
+- name: Setup VM essential
+  hosts: dev:&Fedora
+  sudo: yes
+  tags: essentials
+  roles:
+      - distro/fedora/essentials
+
+- name: Setup developer home
+  hosts: dev
+  sudo: no
+  tags: dev-env
+  roles:
+    - dev/env
+

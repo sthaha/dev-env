@@ -1,0 +1,17 @@
+---
+- name: Gather info about hosts
+  hosts: dev
+  tags: essentials,dev-env
+  roles:
+    -  common/group_by
+
+- name: Setup VM essential
+  hosts: dev:&Ubuntu
+  sudo: yes
+  tags: install
+  roles:
+      - distro/ubuntu/essentials
+      - distro/ubuntu/privacy
+      - distro/ubuntu/tools
+      - distro/ubuntu/multimedia
+

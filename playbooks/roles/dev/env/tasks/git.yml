@@ -1,0 +1,14 @@
+---
+- name: git | create git dirs
+  tags: git
+  file: path={{item}} state=directory
+  with_items:
+    - ~/Developer/Tools/git/
+
+- name: git | copy config
+  tags: git
+  copy: src={{item.src}} dest={{ item.dest }}
+  with_items:
+      - { src: git/gitconfig, dest: ~/.gitconfig }
+      - { src: git/templates/, dest: ~/Developer/Tools/git/templates/ }
+

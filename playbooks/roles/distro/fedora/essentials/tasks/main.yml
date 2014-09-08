@@ -1,0 +1,21 @@
+---
+# use sudo when executing the role
+
+# update cache and dist-upgrade
+- name: fedora | dist upgrade
+  yum: name=* state=latest
+
+- name: fedora | install essential packages
+  yum: pkg={{item}} state=present
+  with_items:
+    - gcc
+    - gcc-c++
+    - git
+    - cmake
+    - vim
+    - curl
+    - wget
+    - zsh
+    - tmux
+    - htop
+

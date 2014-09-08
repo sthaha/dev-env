@@ -1,0 +1,43 @@
+---
+- name: vim | create vim dirs
+  tags: vim
+  file: path={{item}} state=directory
+  with_items:
+    - ~/.vim/
+    - ~/.vim/colors
+    - ~/.vim/autoload
+
+- name: vim | copy settings
+  tags: vim
+  copy: src={{item.file}} dest={{item.dest}}
+  with_items:
+      - { file: vim/vimrc, dest: ~/.vimrc }
+      - { file: vim/colors/zenburn.vim, dest: ~/.vim/colors/ }
+      - { file: vim/autoload/plug.vim, dest: ~/.vim/autoload/ }
+
+- name: vim | ycm | fedora | install packages needed for the plugin
+  tags: vim
+  sudo: yes
+  yum: pkg={{item}} state=present
+  with_items:
+    - cmake
+    - python-devel
+    - gcc-c++
+  when: ansible_distribution in ('Fedora')
+
+- name: vim | ycm |debian | install packages needed for the plugin
+  tags: vim
+  sudo: yes
+  apt: pkg={{item}} state=present
+  with_items:
+    - cmake
+    - python-dev
+    - g++
+  when: ansible_distribution in ('Ubuntu')
+
+- name: vim | plug install all plugins
+  tags:
+    - vim
+    - vim-plugins
+  command: vim -c PlugInstall  -c q -c q
+

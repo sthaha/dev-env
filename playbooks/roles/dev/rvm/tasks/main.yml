@@ -1,0 +1,36 @@
+---
+- name: rvm | install packages needed
+  tags: rvm
+  sudo: yes
+  yum: pkg={{item}} state=present
+  with_items:
+    - patch
+    - libyaml-devel
+    - libffi-devel
+    - glibc-headers
+    - autoconf
+    - gcc-c++
+    - glibc-devel
+    - patch
+    - readline-devel
+    - zlib-devel
+    - openssl-devel
+    - bzip2
+    - automake
+    - libtool
+    - bison
+    - curl
+
+- name: rvm | install packages needed for gems
+  tags: rvm, rmv-gems
+  sudo: yes
+  yum: pkg={{item}} state=present
+  with_items:
+      - libvirt-devel
+      - libxslt-devel
+      - libxml2-devel
+
+- name: rvm | curl and install
+  tags: rvm
+  shell: which rvm || { curl -sSL https://get.rvm.io | bash -s stable }
+

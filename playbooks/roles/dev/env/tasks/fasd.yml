@@ -1,0 +1,28 @@
+
+### fasd ###
+- name: fasd | clone repo
+  tags: fasd
+  set_fact: fasd_repo='{{fasd_repo | default(fasd.repo)}}'
+
+- name: fasd | create necessary dirs
+  tags: fasd
+  file: path={{item}} state=directory
+  with_items:
+      - ~/Developer/Tools
+      - ~/.local/share/man/man1
+
+- debug: msg='fasd clone {{fasd_repo}}'   #'
+  tags: fasd
+
+- name: fasd | clone
+  tags: fasd
+  git: repo={{fasd_repo}} dest={{fasd.dest}}
+
+- name: fasd | make install
+  tags: fasd
+  shell: >
+    PREFIX=$HOME make install;
+    mv ~/share/man/man1/fasd.1 ~/.local/share/man/man1;
+  args:
+    chdir: "{{fasd.dest}}"
+    executable: /bin/bash

@@ -1,0 +1,4 @@
+---
+- name: Install mysql
+  yum: pkg=mariadb state=present
+

@@ -1,0 +1,39 @@
+- name: rbenv | clone
+  tags: ruby
+  git: repo={{rbenv.repo}} dest='{{ rbenv.dest }}'
+
+- name: rbenv | clone rbenv install
+  tags: ruby
+  git: repo={{rbenv.ruby_build.repo}}
+      dest='{{ rbenv.dest }}/plugins/ruby-build'
+
+- name: rbenv | fedora | install required libs
+  tags: ruby
+  sudo: yes
+  yum: pkg={{item}} state=present
+  with_items:
+    - openssl-devel
+  when: ansible_distribution in ('Fedora')
+
+- name: rbenv | ubuntu | install required libs
+  tags: ruby
+  sudo: yes
+  apt: pkg={{item}} state=present
+  with_items:
+    - libssl-dev
+  when: ansible_distribution in ('Ubuntu')
+
+- name: rbenv | install ruby
+  tags: ruby
+  shell: >
+    type rbenv || {
+       export PATH="{{rbenv.dest}}/bin:$PATH"
+    };
+    type rbenv;
+    [[ "$(type -t rbenv)" != 'function' ]] && {
+        eval "$( rbenv init - )";
+    };
+    rbenv install 2.1.2 && rbenv global 2.1.2;
+  args:
+    executable: /bin/bash
+### will handle the zsh part in zsh.yml ###
