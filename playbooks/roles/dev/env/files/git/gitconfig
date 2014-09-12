@@ -41,6 +41,7 @@
 
     b = branch
     bo = "!git branch -r | grep origin"
+    br = "!f(){ git branch -r | grep ${1:-origin}; }; f"
 
     c = commit
     ca = commit -am
