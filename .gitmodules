@@ -1,0 +1,3 @@
+[submodule "playbooks/roles/thirdparty/nosql/mongod"]
+	path = playbooks/roles/thirdparty/nosql/mongod
+	url = git://github.com/bennojoy/mongo_mongod.git
