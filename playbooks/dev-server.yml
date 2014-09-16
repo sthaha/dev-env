@@ -1,0 +1,16 @@
+---
+- name: Gather info about hosts
+  hosts: dev
+  tags: dev-server
+  roles:
+    -  common/group_by
+
+- name: Setup servers
+  hosts: dev
+  sudo: yes
+  tags: servers
+  roles:
+    - { role: thirdparty/nosql/mongod,
+        mongod_datadir_prefix: '/data/',
+        mongod_replication: false,
+        mongod_port: 2701 }
