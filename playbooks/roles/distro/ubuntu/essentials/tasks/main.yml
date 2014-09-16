@@ -10,6 +10,7 @@
   with_items:
     - build-essential
     - g++
+    - make
     - git
     - cmake
     - vim

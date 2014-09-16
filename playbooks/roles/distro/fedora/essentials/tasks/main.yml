@@ -10,6 +10,8 @@
   with_items:
     - gcc
     - gcc-c++
+    - which
+    - make
     - git
     - cmake
     - vim
@@ -18,4 +20,3 @@
     - zsh
     - tmux
     - htop
-
