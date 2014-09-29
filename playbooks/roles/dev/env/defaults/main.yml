@@ -25,3 +25,14 @@ nvm:
   repo: git://github.com/creationix/nvm.git
   dest: ~/.nvm
 
+vim:
+  required:
+    dirs:
+    - ~/.vim/
+    - ~/.vim/colors
+    - ~/.vim/autoload/
+
+  plug:
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    dest: ~/.vim/autoload/
+

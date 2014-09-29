@@ -1,11 +1,25 @@
 ---
+- name: vim | ensure present
+  tags: vim
+  sudo: yes
+  yum: pkg=vim state=present
+  when: ansible_distribution in ('Fedora')
+
+- name: vim | ensure present
+  tags: vim
+  sudo: yes
+  apt: pkg=vim state=present
+  when: ansible_distribution in ('Ubuntu')
+
 - name: vim | create vim dirs
   tags: vim
   file: path={{item}} state=directory
-  with_items:
-    - ~/.vim/
-    - ~/.vim/colors
-    - ~/.vim/autoload
+  with_items: vim.required.dirs
+
+
+- name: vim | download vim plugin manager vim-plug
+  tags: vim
+  get_url: url={{vim.plug.url}} dest={{vim.plug.dest}}
 
 - name: vim | copy settings
   tags: vim
@@ -13,7 +27,6 @@
   with_items:
       - { file: vim/vimrc, dest: ~/.vimrc }
       - { file: vim/colors/zenburn.vim, dest: ~/.vim/colors/ }
-      - { file: vim/autoload/plug.vim, dest: ~/.vim/autoload/ }
 
 - name: vim | ycm | fedora | install packages needed for the plugin
   tags: vim
