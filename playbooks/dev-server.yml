@@ -12,5 +12,5 @@
   roles:
     - { role: thirdparty/nosql/mongod,
         mongod_datadir_prefix: '/data/',
-        mongod_replication: false,
-        mongod_port: 2701 }
+        mongod_replication: false
+      }
