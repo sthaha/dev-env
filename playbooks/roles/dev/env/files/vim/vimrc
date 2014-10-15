@@ -348,8 +348,8 @@ call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
   \ 'ignore_pattern', join([
   \ '\.git/',
   \ '\.sass-cache/',
-  \ '\vendor/',
-  \ '\node_modules/',
+  \ 'node_modules/',
+  \ 'bower_components/',
   \ ], '\|'))
 nnoremap <space>a :<C-u>Unite -buffer-name=files   -start-insert file_rec/async:!<cr>
 nnoremap <space>f :<C-u>Unite -buffer-name=buffer  buffer<cr>
