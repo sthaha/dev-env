@@ -208,7 +208,6 @@ set t_Co=256
 let g:zenburn_high_Contrast=1
 let g:zenburn_alternate_Visual=1
 colors zenburn
-"hi CtrlPLinePre ctermfg=red
 
 
 """""""""""""""""""""""""""""""
@@ -226,7 +225,6 @@ Plug 'junegunn/vim-easy-align'
 Plug 'bling/vim-airline'
 Plug 'L9'
 "Plug 'davidhalter/jedi-vim'
-Plug 'kien/ctrlp.vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/syntastic'
@@ -243,7 +241,7 @@ Plug 'jwhitley/vim-matchit'
 Plug 'editorconfig-vim'
 Plug 'jondkinney/dragvisuals.vim'
 
-Plug 'Valloric/YouCompleteMe', {'for': [], 'do': './install.sh --clang-completer'}
+Plug 'Valloric/YouCompleteMe', {'for': [], 'do': './install.sh'}
 Plug 'marijnh/tern_for_vim', {'for': ['javascript'], 'do': 'npm install'}
 
 Plug 'klen/python-mode', { 'for': ['python'] }
@@ -251,13 +249,23 @@ Plug 'html-xml-tag-matcher', { 'for': ['html', 'xml'] }
 Plug 'chase/vim-ansible-yaml', { 'for': ['ansible', 'yaml'] }
 Plug 'tpope/vim-markdown', { 'for': ['markdown'] }
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'pangloss/vim-javascript', { 'for': ['js', 'html', 'css'] }
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/neomru.vim'
+Plug 'Shougo/unite-outline'
 
+Plug 'Shougo/vimproc.vim', {'do': 'make'}
 call plug#end()
 
 
 
 " Show the File Explorer
 map <Leader>n <esc>:NERDTreeToggle<CR>
+
+""""""""""""""""""""""""""""""
+" jedi-vim don't show doc
+""""""""""""""""""""""""""""""
+autocmd FileType * setlocal completeopt-=preview
 
 """""""""""""""""""""""""""""""
 " You Complete Me
@@ -297,6 +305,10 @@ let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-e>"
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
+""""""""""""""""""""""""""""""""
+" Fix my js
+""""""""""""""""""""""""""""""""
+noremap '<leader>b' :Fixmyjs<CR>
 
 """"""""""""""""""""""""""""""""
 " Vim airline
@@ -321,25 +333,48 @@ let g:airline#extensions#tabline#enabled = 1
  let g:syntastic_error_symbol='✗'
  let g:syntastic_warning_symbol='⚠'
 
+""""""""""""""""""""""""""""""""""
+"  Unite.vim
+""""""""""""""""""""""""""""""""""
+let g:unite_enable_start_insert = 1
+let g:unite_split_rule = "botright"
+let g:unite_force_overwrite_statusline = 0
+let g:unite_winheight = 12
+let g:unite_source_history_yank_enable = 1
 
-"""""""""""""""""""""""""""""""""""
-" Ctrl+P
-"""""""""""""""""""""""""""""""""""
-let g:ctrlp_max_height = 18
-set wildignore+=*.pyc
-set wildignore+=*_build/*
-set wildignore+=*/coverage/*
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
+  \ 'ignore_pattern', join([
+  \ '\.git/',
+  \ '\.sass-cache/',
+  \ '\vendor/',
+  \ '\node_modules/',
+  \ ], '\|'))
+nnoremap <space>a :<C-u>Unite -buffer-name=files   -start-insert file_rec/async:!<cr>
+nnoremap <space>f :<C-u>Unite -buffer-name=buffer  buffer<cr>
+nnoremap <space>g :<C-u>Unite -start-insert grep:.<cr>
+nnoremap <space>u :<C-u>Unite -buffer-name=mru     -start-insert file_mru<cr>
+nnoremap <space>o :<C-u>Unite -no-split outline<cr>
+nnoremap <space>y :<C-u>Unite -buffer-name=yank    history/yank<cr>
+"nnoremap <space>f :<C-u>Unite -buffer-name=files   -start-insert file<cr>
 
-let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/](node_modules|bower_components|target|dist)|(\.(swp|ico|git|svn))$',
-  \ 'file': '\v\.(o|exe|so|dll|swp|pyc|wav|mp3|ogg)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
+" Custom mappings for the unite buffer
+autocmd FileType unite call s:unite_settings()
+function! s:unite_settings()
+  " Play nice with supertab
+  let b:SuperTabDisabled=1
+  " Enable navigation with control-j and control-k in insert mode
+  imap <buffer> <C-j>   <Plug>(unite_select_next_line)
+  imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
+  "nmap <buffer> <ESC> <Plug>(unite_exit)
 
-let g:ctrlp_match_window_bottom = 1
-let g:ctrlp_map = '<Leader>a'
-nmap <leader>j :CtrlPMRUFiles:<CR>
-nmap <leader>r :CtrlPBuffer<CR>
+  let b:actually_quit = 0
+  setlocal updatetime=2
+  au! InsertEnter <buffer> let b:actually_quit = 0
+  au! InsertLeave <buffer> let b:actually_quit = 1
+  au! CursorHold  <buffer> if exists('b:actually_quit') && b:actually_quit | close | endif
+endfunction
 
 """"""""""""""""""""""""""
 " py-mode
