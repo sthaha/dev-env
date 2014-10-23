@@ -271,9 +271,9 @@ autocmd FileType * setlocal completeopt-=preview
 " You Complete Me
 """""""""""""""""""""""""""""""
 " do not load ycm for ruby
-augroup plug_xtype
-  autocmd FileType * if expand('<amatch>') != 'ruby' | call plug#load('YouCompleteMe') | execute 'autocmd! plug_xtype' | endif
-augroup END
+"augroup plug_xtype
+  "autocmd FileType * if expand('<amatch>') != 'ruby' | call plug#load('YouCompleteMe') | execute 'autocmd! plug_xtype' | endif
+"augroup END
 let g:ycm_min_num_of_chars_for_completion = 3
 let g:ycm_key_list_select_completion=[]
 let g:ycm_key_list_previous_completion=[]
