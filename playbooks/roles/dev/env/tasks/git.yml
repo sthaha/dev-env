@@ -1,4 +1,16 @@
 ---
+- name: git | rpm | install
+  tags: git
+  yum:  pkg=git state=present
+  sudo: yes
+  when: ansible_distribution in ('RedHat', 'Fedora')
+
+- name: git | deb | install
+  tags: git
+  apt:  pkg=git state=present
+  sudo: yes
+  when: ansible_distribution in ('Ubuntu')
+
 - name: git | create git dirs
   tags: git
   file: path={{item}} state=directory
