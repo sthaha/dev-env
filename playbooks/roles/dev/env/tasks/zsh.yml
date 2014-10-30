@@ -8,7 +8,7 @@
 
 - name: zsh | clone oh my zsh
   tags: zsh
-  git: repo={{zsh_repo}} dest={{zsh.dest}}
+  git: repo={{zsh_repo}} dest={{zsh.dest}} accept_hostkey=yes
 
 - name: zsh | create necessary dirs
   tags: zsh
