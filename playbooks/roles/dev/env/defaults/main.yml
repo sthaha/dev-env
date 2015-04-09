@@ -10,7 +10,7 @@ zsh:
 
 fasd:
   repo: git://github.com/clvv/fasd.git
-  dest: ~/Developer/Tools/fasd
+  dest: ~/Developer/Tools/shell/fasd/src
 
 rbenv:
   repo: git://github.com/sstephenson/rbenv.git

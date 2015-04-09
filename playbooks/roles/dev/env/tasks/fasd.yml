@@ -8,8 +8,8 @@
   tags: fasd
   file: path={{item}} state=directory
   with_items:
-      - ~/Developer/Tools
-      - ~/.local/share/man/man1
+    - {{ fasd_repo }}
+    - ~/.local/share/man/man1
 
 - debug: msg='fasd clone {{fasd_repo}}'   #'
   tags: fasd
@@ -23,6 +23,7 @@
   shell: >
     PREFIX=$HOME make install;
     mv ~/share/man/man1/fasd.1 ~/.local/share/man/man1;
+    find ~/share/ -type d -empty -delete;
   args:
     chdir: "{{fasd.dest}}"
     executable: /bin/bash
