@@ -216,9 +216,9 @@ colors zenburn
 
 " TODO: FIX this vim-plug allows parallel downloads but SEGVs
 " due to some ruby related issue.
-let g:plug_threads = 1
+"let g:plug_threads = 1
 
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/Developer/Tools/Vim/plugins')
 
 Plug 'tpope/vim-sensible'
 Plug 'junegunn/vim-easy-align'
@@ -240,6 +240,7 @@ Plug 'Yggdroot/indentLine'
 Plug 'jwhitley/vim-matchit'
 Plug 'editorconfig-vim'
 Plug 'jondkinney/dragvisuals.vim'
+Plug 'airblade/vim-gitgutter'
 
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh'}
 Plug 'marijnh/tern_for_vim', {'for': ['javascript'], 'do': 'npm install'}
