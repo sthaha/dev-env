@@ -18,7 +18,7 @@ if has('nvim')
     runtime! plugin/python_setup.vim
 endif
 " Automatically reload .vimrc
-autocmd! BufWritePost .vimrc source %
+autocmd! BufWritePost .nvimrc source %
 
 " Automatically cd into the directory that the file is in
 autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
@@ -42,14 +42,12 @@ set wildmode=longest:list
 " show filename in xterm's title
 set title
 
-"-------------------------------------------------
-
 
 """"""""""""""""""""""""""""""
 " auto spellcheck for docs
 """""""""""""""""""""""""""""
 au BufNewFile,BufRead COMMIT_EDITMSG setlocal spell
-autocmd FileType md,rst setlocal spell
+autocmd FileType md,rst,txt,adoc setlocal spell
 
 
 " This shows what you are typing as a command.  I love this!
@@ -72,8 +70,8 @@ set hidden
 set clipboard=unnamed
 
 " allow deleting selection without updating the clipboard (yank buffer)
-vnoremap x "_x
-vnoremap X "_X
+" vnoremap x "_x
+" vnoremap X "_X
 set pastetoggle=<F2>
 
 
@@ -87,27 +85,23 @@ nmap <C-M> :set invnumber<CR>
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 
 function! NumberToggle()
-  if(&relativenumber == 1)
-    set number
-  else
-    set relativenumber
-  endif
+    set invrelativenumber
 endfunc
 
 nnoremap <C-l> :call NumberToggle()<cr>
-
 
 set tw=80 " width of the doc (used by gd???)
 set fo-=t " do not automatically wrap text when typing
 
 
-""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " color column > 80
 """"""""""""""""""""""""""""""""
-highlight ColorColumn ctermbg=052
-call matchadd('ColorColumn', '\%81v', 100)
-"set colorcolumn=80
-"highlight ColorColumn ctermbg=222
+" highlight ColorColumn  ctermbg=55
+" set colorcolumn=80
+
+let &colorcolumn="80,".join(range(120,999),",")
+call matchadd('ColorColumn', '\%81v', 55)
 
 
 """"""""""""""""""""""""
@@ -179,7 +173,7 @@ nnoremap <C-y> 3<C-y>
 "  use buffer instead of tabs
 """"""""""""""""""""""""""""""""""""""""""
 " To open a new empty buffer
-nmap <leader>t :enew<cr>
+nmap <leader>n :enew<cr>
 
 " Move to the previous buffer
 nmap <leader>h :bprevious<CR>
@@ -189,7 +183,7 @@ nmap <leader>l :bnext<CR>
 
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
-nmap <leader>c :bp <BAR> bd #<CR>
+nmap <leader>x :bp <BAR> bd #<CR>
 
 " Show all open buffers and their status
 nmap <leader>bl :ls<CR>
@@ -213,6 +207,10 @@ autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 ",w catch trailing whitespace press <leader>w
 nmap <silent> <leader>w :set nolist!<CR>
 
+" Insert date by pressing <F2>
+inoremap <F2> <C-R>=strftime("%c")<CR>
+
+
 
 """"""""""""""""""""""""""""
 " zenburn
@@ -227,20 +225,14 @@ colors zenburn
 " plugins
 """""""""""""""""""""""""""""""
 
-" TODO: FIX this vim-plug allows parallel downloads but SEGVs
-" due to some ruby related issue.
-"let g:plug_threads = 1
-
 call plug#begin('~/Developer/Tools/Vim/plugins')
 
 Plug 'tpope/vim-sensible'
 Plug 'junegunn/vim-easy-align'
 Plug 'bling/vim-airline'
 Plug 'L9'
-"Plug 'davidhalter/jedi-vim'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/syntastic'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'terryma/vim-multiple-cursors'
@@ -252,7 +244,9 @@ Plug 'mitsuhiko/vim-jinja'
 Plug 'Yggdroot/indentLine'
 Plug 'jwhitley/vim-matchit'
 Plug 'editorconfig-vim'
-Plug 'jondkinney/dragvisuals.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'scrooloose/syntastic'
+Plug 'mattn/emmet-vim'
 Plug 'airblade/vim-gitgutter'
 
 Plug 'Valloric/YouCompleteMe', {'do': './install.sh'}
@@ -270,15 +264,59 @@ Plug 'Shougo/neomru.vim'
 Plug 'Shougo/unite-outline'
 Plug 'fidian/hexmode'
 Plug 'sheerun/vim-polyglot'
-Plug 'sjl/gundo.vim.git'
-
+Plug 'sjl/gundo.vim'
+Plug 'vimwiki/vimwiki'
+Plug 'mattn/calendar-vim'
+Plug 'stephpy/vim-yaml'
 Plug 'Shougo/vimproc.vim', {'do': 'make'}
 call plug#end()
 
 
+""""""""""""""""""""""""""""""
+" vimwiki stuff "
+""""""""""""""""""""""""""""""
 
-" Show the File Explorer
-map <Leader>n <esc>:NERDTreeToggle<CR>
+" Run multiple wikis "
+let g:vimwiki_list = [
+    \{'path': '~/Dropbox/Private/Data/VimWiki/work.wiki'},
+    \{'path': '~/Dropbox/Private/Data/VimWiki/developer.wiki'},
+    \{'path': '~/Dropbox/Private/Data/VimWiki/personal.wiki'},
+\]
+
+au BufRead,BufNewFile *.wiki set filetype=vimwiki
+:autocmd FileType vimwiki nmap <leader>d :VimwikiMakeDiaryNote
+
+function! ToggleCalendar()
+  execute ":Calendar"
+  if exists("g:calendar_open")
+    if g:calendar_open == 1
+      execute "q"
+      unlet g:calendar_open
+    else
+      g:calendar_open = 1
+    end
+  else
+    let g:calendar_open = 1
+  end
+endfunction
+
+:autocmd FileType vimwiki nmap <leader>c :call ToggleCalendar()<CR>
+
+""""""""""""""""""""""""""""""
+" history: gundo
+""""""""""""""""""""""""""""""
+nnoremap <F5> :GundoToggle<CR>
+
+
+""""""""""""""""""""""""""""""
+" nerdcommenter
+""""""""""""""""""""""""""""""
+let NERDSpaceDelims = 1
+
+""""""""""""""""""""""""""""""
+" NertTree
+""""""""""""""""""""""""""""""
+map <Leader>t <esc>:NERDTreeToggle<CR>
 
 """"""""""""""""""""""""""""""
 " jedi-vim don't show doc
@@ -326,14 +364,14 @@ inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 """"""""""""""""""""""""""""""""
 " Vim airline
 """"""""""""""""""""""""""""""""
-set laststatus=2
+" set laststatus=2
 let g:airline_theme = 'ubaryd'
 let g:airline_powerline_fonts = 1
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
 
 " Show just the filename
-"let g:airline#extensions#tabline#fnamemod = ':t'
+let g:airline#extensions#tabline#fnamemod = ':p'
 
 """""""""""""""""""""""""""""
 " syntastic
@@ -343,8 +381,8 @@ let g:syntastic_auto_loc_list=0
 let g:syntastic_enable_signs=1
 let g:syntastic_check_on_open=1
 
- let g:syntastic_error_symbol='✗'
- let g:syntastic_warning_symbol='⚠'
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
 
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_perl_checkers = ['perlcritic', 'perl', 'podchecker']
@@ -365,17 +403,16 @@ call unite#custom_default_action('directory,directory_mru', 'cd')
 
 nnoremap <space>F :<C-u>Unite -start-insert -auto-resize file<CR>
 nnoremap <space>U :<C-u>Unite -buffer-name=mru  -start-insert file_mru<cr>
-nnoremap <space>B :<C-u>Unite -start-insert -auto-resize buffer<CR>
+nnoremap <space>s :<C-u>Unite -start-insert -auto-resize buffer<CR>
 nnoremap <space>r :<C-u>Unite register<CR>
 nnoremap <space>y :<C-u>Unite history/yank<CR>
 
 nnoremap <space>e :<C-u>UniteWithBufferDir -start-insert -auto-resize file<CR>
 
 nnoremap <space>a :<C-u>UniteWithProjectDir -buffer-name=files -auto-resize -start-insert file_rec/async:!<cr>
-nnoremap <space>b :<C-u>UniteWithProjectDir -start-insert -auto-resize buffer<CR>
+nnoremap <space>B :<C-u>UniteWithProjectDir -start-insert -auto-resize buffer<CR>
 nnoremap <space>f :<C-u>UniteWithProjectDir -start-insert -auto-resize file_rec/async:!<CR>
 nnoremap <space>g :<C-u>UniteWithProjectDir -start-insert grep:.<cr>
-nnoremap <space>l :<C-u>UniteWithProjectDir -start-insert -auto-resize line<CR>
 nnoremap <space>o :<C-u>UniteWithProjectDir -auto-resize outline<CR>
 nnoremap <space>u :<C-u>UniteWithProjectDir -buffer-name=mru  -start-insert file_mru<cr>
 
@@ -386,8 +423,10 @@ call unite#custom_source(
         \ '\.sass-cache/',
         \ 'node_modules/',
         \ 'bower_components/',
+        \ 'LOCAL_INSTALL/',
         \ '.ropeproject/',
         \ '.__pycache__/',
+        \ '\.d',
     \ ], '\|')
 \)
 
@@ -395,7 +434,7 @@ function! s:unite_settings()
   " Play nice with supertab
   let b:SuperTabDisabled=1
 
-  " Enable navigation with control-j and control-k in insert mode
+  " Enable navigation with control-u and control-i in insert mode
   imap <buffer> <C-u>   <Plug>(unite_select_next_line)
   imap <buffer> <C-i>   <Plug>(unite_select_previous_line)
   nmap <buffer> <ESC> <Plug>(unite_exit)
@@ -471,14 +510,9 @@ let g:indentLine_first_char = '│'
 let g:indentLine_color_term = 236
 let g:indentLine_showFirstIndentLevel = 0
 
+highlight ColorColumn ctermbg=235 guibg=#2c2d27
 
-""""""""""""""""""""""""""""""""""""
-" Drag Visual Blocks
-""""""""""""""""""""""""""""""""""""
-vmap  <expr>  <LEFT>   DVB_Drag('left')
-vmap  <expr>  <RIGHT>  DVB_Drag('right')
-vmap  <expr>  <DOWN>   DVB_Drag('down')
-vmap  <expr>  <UP>     DVB_Drag('up')
-vmap  <expr>  D        DVB_Duplicate()
+
 
 set shell=/bin/sh
+
