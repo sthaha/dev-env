@@ -14,7 +14,11 @@ ZSH_THEME="neil"
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
 
-# Comment this out to disable bi-weekly auto-update checks
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+# HYPHEN_INSENSITIVE="true"
+
+# Uncomment the following line to disable bi-weekly auto-update checks.
 DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
@@ -40,7 +44,7 @@ DISABLE_AUTO_UPDATE="true"
 # Uncomment the following line if you want to change the command execution time
 # stamp shown in the history command output.
 # The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
+HIST_STAMPS="dd/mm/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -51,28 +55,37 @@ DISABLE_AUTO_UPDATE="true"
 #
 # Add wisely, as too many plugins slow down shell startup.
 ### NOTE zsh-syntax-highlighting **should** be at the **end**
-plugins=(fasd git nvm vim colorize history history-substring-search colored-man rbenv virtualenv zsh-syntax-highlighting)
+#plugins=(fasd alert nvm colorize history history-substring-search colored-man virtualenv zsh-syntax-highlighting)
+# plugins=(fasd alert rvm vagrant nvm colorize history history-substring-search virtualenv zsh-syntax-highlighting)
+
+plugins=(
+    fasd alert colored-man beautiless
+    vagrant nvm colorize
+    history history-substring-search
+    virtualenv
+    zsh-syntax-highlighting
+)
 
 source $ZSH/oh-my-zsh.sh
 hash -d z=$ZSH
 
 # User configuration
-ZSH_HIGHLIGHT_STYLES[path]='fg=114'
-ZSH_HIGHLIGHT_STYLES[precommand]='fg=160'
+# ZSH_HIGHLIGHT_STYLES[path]='fg=114'
+# ZSH_HIGHLIGHT_STYLES[precommand]='fg=160'
 
-export PATH=/usr/local/bin:$PATH
+_path_prepend /usr/local/bin
+[[ -d ~/.local/bin ]] && _path_prepend  "$HOME/.local/bin"
+_path_prepend "$HOME/bin"
 
-
-[[ -d ~/.local/bin ]] && {
-    export PATH=$HOME/.local/bin:$PATH
-}
-
-export PATH=$HOME/bin:$PATH
 
 export VIRSH_DEFAULT_CONNECT_URI='qemu:///system'
+#export VAGRANT_DEFAULT_PROVIDER=libvirt
+# export rvm_silence_path_mismatch_check_flag=1
 
 #
 # export MANPATH="/usr/local/man:$MANPATH"
+
+source $ZSH/oh-my-zsh.sh
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -99,4 +112,9 @@ export VIRSH_DEFAULT_CONNECT_URI='qemu:///system'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-#export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+#
+#
+### increase ulimit because I see lot of
+#git_prompt_status:3: fork failed: resource temporarily unavailable
+#
+# ulimit -u 2048
