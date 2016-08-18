@@ -1,9 +1,11 @@
 ### do not change this part ###
 localhost ansible_connection=local
 
-### Add vm settings here ###
+### Add VM settings here ###
 #vm-f20 ansible_ssh_host=192.168.1.100 ansible_ssh_user=user ansible_sudo_pass=password
 
-### Add VM to dev group
+### Add all/any of the VMs mentioned in the above section to dev group
+### Comment 'localhost' if you don't want to set up dev env in the host machine
 [dev]
-vm-f20
+localhost
+#vm-f20
